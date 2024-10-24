@@ -10,7 +10,7 @@ RUN pnpm install
 
 COPY . .
 
-FROM node:15.13.0
+FROM node:18.17.0
 
 WORKDIR /app
 

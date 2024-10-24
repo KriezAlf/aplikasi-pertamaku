@@ -1,10 +1,14 @@
 <script setup>
 import { ref } from 'vue';
 import CommentSection from './components/CommentSection.vue';
+import DOMPurify from 'dompurify';
 
 const userId = ref('');
 const users = ref(null);
 const newEmail = ref('');
+
+const sanitizedUserId = DOMPurify.sanitize(userId.value);
+const sanitizedNewEmail = DOMPurify.sanitize(newEmail.value);
 
 const getUser = async () => {
   const response = await fetch(`http://localhost:3000/api/user/${userId.value}`);
@@ -12,14 +16,23 @@ const getUser = async () => {
 };
 
 const changeEmail = async () => {
-  await fetch('http://localhost:3000/api/change-email', {
+  const sanitizedNewEmail = DOMPurify.sanitize(newEmail.value);
+if (!userId.value) {
+  console.error("User ID is empty");
+  return;
+}
+
+
+  await fetch(`http://localhost:3000/api/user/${userId.value}/change-email`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: `email=${newEmail.value}`,
+      'Content-Type': 'application/json',     
+      },
+    body: JSON.stringify({ email: sanitizedNewEmail }), 
   });
 };
+
+
 </script>
 
 <template>
