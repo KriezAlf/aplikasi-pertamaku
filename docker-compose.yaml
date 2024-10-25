@@ -1,5 +1,3 @@
-
-
 services:
   backend:
     build:
@@ -11,7 +9,7 @@ services:
     ports:
       - "3000:3000"   
     environment:
-      - NAME=Ignatius
+      - VUE_APP_SUBDOMAIN=ignatius
 
   frontend:
     build:
@@ -22,5 +20,5 @@ services:
     ports:
       - "80:80"
     environment:
-      - NAME=Ignatius
+      - VUE_APP_SUBDOMAIN=ignatius
 
