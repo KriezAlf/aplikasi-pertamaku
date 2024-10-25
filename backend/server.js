@@ -26,11 +26,14 @@ app.use(limiter);
 
 
 const connection = new sqlite3.Database('./db/aplikasi.db');
-const options = {
-  key: fs.readFileSync('/etc/ssl/private/privkey.pem'),
-  cert: fs.readFileSync('/etc/ssl/certs/fullchain.pem'),
-};
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const options = {
+  key: fs.readFileSync(path.join(__dirname, '../ssl/private.pem')),
+  cert: fs.readFileSync(path.join(__dirname, '../ssl/cert.pem'))
+};
 
 const validateEmail = (email) => {
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -72,9 +75,6 @@ app.post('/api/user/:id/change-email', (req, res) => {
 
 
 app.get('/api/file', (req, res) => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
   const fileName = path.basename(req.query.name); 
   const filePath = path.join(__dirname, 'files', fileName);
 
@@ -86,8 +86,7 @@ app.get('/api/file', (req, res) => {
   });
 });
 
-
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
+const PORT = 3000;
+https.createServer(options, app).listen(PORT, () => {
+  console.log(`Server is running on https://4.237.59.7:${PORT}`);
 });
-
