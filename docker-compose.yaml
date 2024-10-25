@@ -1,25 +1,27 @@
+version: '3.8'
+
 services:
-  backend:
+  aplikasi-pertamaku-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    volumes:
-      - /home/kriez/aplikasi-pertamaku/ssl:/ssl
-      - ./backend:/app
-      - ./backend/db/aplikasi.db:/app/db/aplikasi.db
     ports:
-      - "3000:3000"   
-    environment:
-      - VUE_APP_SUBDOMAIN=ignatius
-
-  frontend:
+      - "3000:3000"
+  aplikasi-pertamaku-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/usr/share/nginx/html
     ports:
       - "80:80"
-    environment:
-      - VUE_APP_SUBDOMAIN=ignatius
-
+    depends_on:
+      - aplikasi-pertamaku-backend
+  aplikasi-pertamaku-nginx:
+    image: nginx:latest
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/certs:/etc/ssl/certs
+    ports:
+      - "443:443"
+    depends_on:
+      - aplikasi-pertamaku-backend
+      - aplikasi-pertamaku-frontend
