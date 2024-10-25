@@ -7,7 +7,7 @@ import cors from 'cors';
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: '*',
+	origin: 'http://4.237.59.7:80',
   optionsSuccessStatus: 200,
 }));
 
