@@ -3,22 +3,33 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import sqlite3 from 'sqlite3';
 import cors from 'cors';
+import https from 'https';
+import fs from 'fs';
+import rateLimit from 'express-rate-limit';
+
 
 const app = express();
-app.use(express.json());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-	origin: 'http://4.237.59.7:80',
+  origin: 'https://4.237.59.7',
   optionsSuccessStatus: 200,
 }));
 
 
-app.use((req, res, next) => {
-  console.log(`Received ${req.method} request for ${req.url}`);
-  next();
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, 
+  max: 200,
+  message: 'Too many requests, please try again later.',
 });
+app.use(limiter);
 
 
 const connection = new sqlite3.Database('./db/aplikasi.db');
+const options = {
+  key: fs.readFileSync('/etc/ssl/private/privkey.pem'),
+  cert: fs.readFileSync('/etc/ssl/certs/fullchain.pem'),
+};
 
 
 const validateEmail = (email) => {

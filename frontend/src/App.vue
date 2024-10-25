@@ -11,7 +11,7 @@ const sanitizedUserId = DOMPurify.sanitize(userId.value);
 const sanitizedNewEmail = DOMPurify.sanitize(newEmail.value);
 
 const getUser = async () => {
-  const response = await fetch(`http://localhost:3000/api/user/${userId.value}`);
+  const response = await fetch(`http://4.237.59.7:3000/api/user/${userId.value}`);
   users.value = await response.json();
 };
 
@@ -23,7 +23,7 @@ if (!userId.value) {
 }
 
 
-  await fetch(`http://localhost:3000/api/user/${userId.value}/change-email`, {
+  await fetch(`http://4.237.59.7:3000/api/user/${userId.value}/change-email`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',     
