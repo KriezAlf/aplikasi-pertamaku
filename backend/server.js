@@ -8,13 +8,15 @@ import fs from 'fs';
 import rateLimit from 'express-rate-limit';
 
 const app = express();
-const PORT = "3000";
+const PORT = 3000;
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cors({
-	origin: ['https://4.237.59.7', 'http://4.237.59.7'],
-  optionsSuccessStatus: 200,
+	origin: 'https://4.237.59.7',
+	methods: ['GET', 'POST', 'PUT', 'Delete'],
+	credentials: true
 }));
 
 const limit = rateLimit({
@@ -25,11 +27,6 @@ const limit = rateLimit({
 app.use(limit);
 
 const connection = new sqlite3.Database('./db/aplikasi.db')
-
-const options = {
-  key: fs.readFileSync('./certs/myserver.key'),
-  cert: fs.readFileSync('./certs/myserver.crt'),
-};
 
 app.get('/api/user/:id', (req, res) => {
   const userId = req.params.id;
@@ -75,7 +72,7 @@ app.get('/api/file', (req, res) => {
 	}
 });
 
-https.createServer(options, app).listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 

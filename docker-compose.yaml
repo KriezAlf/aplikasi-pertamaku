@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+
   aplikasi-pertamaku-frontend:
     build:
       context: ./frontend
@@ -15,6 +16,7 @@ services:
       - "80:80"
     depends_on:
       - aplikasi-pertamaku-backend
+
   aplikasi-pertamaku-nginx:
     image: nginx:latest
     volumes:

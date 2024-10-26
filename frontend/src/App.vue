@@ -11,30 +11,53 @@ const sanitizedUserId = DOMPurify.sanitize(userId.value);
 const sanitizedNewEmail = DOMPurify.sanitize(newEmail.value);
 
 const getUser = async () => {
-  const response = await fetch(`https://4.237.59.7:3000/api/user/${userId.value}`);
-  users.value = await response.json();
+  try{
+    if(!userId.value){
+      console.error("User ID is empty");
+      return;
+  }
+  const response = await fetch(`/api/user/${userId.value}`);
+  if(!response.ok){
+    throw new Error(`Failed to fetch user data: ${response.statusText}`);
+  }
+   users.value = await response.json();
+   console.log("User data retrieved successfully");
+   } catch (error){
+     console.error("Error fetching user data:", error.message);
+  }  
 };
 
 const changeEmail = async () => {
   const sanitizedNewEmail = DOMPurify.sanitize(newEmail.value);
-if (!userId.value) {
-  console.error("User ID is empty");
-  return;
-}
+  try {
+    if (!userId.value) {
+      console.error("User ID is empty");
+      return;
+    }
+    if (!sanitizedNewEmail) {
+      console.error("Email is empty");
+      return;
+    }
 
-
-  await fetch(`https://4.237.59.7:3000/api/user/${userId.value}/change-email`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',     
+    const response = await fetch(`/api/user/${userId.value}/change-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    body: JSON.stringify({ email: sanitizedNewEmail }), 
-  });
+      body: JSON.stringify({ email: sanitizedNewEmail }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to change email: ${response.statusText}`);
+    }
+    console.log("Email changed successfully");
+  } catch (error) {
+    console.error("Error changing email:", error.message);
+  }
 };
 
 
 </script>
-
 <template>
   <div id="app">
     <h1>User Dashboard</h1>
